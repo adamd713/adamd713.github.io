@@ -1,8 +1,27 @@
-<!DOCTYPE html> 
-<html> 
-<head> 
-    <title>Home Questionnaire<span id="selection-marker-1" class="redactor-selection-marker"></span></title> 
-<script>  
+<!DOCTYPE html>
+<html>
+​
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="">
+    <title>Success Engineering</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/duck.ico"/>
+<!--     <script>
+ !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t,e){var n=document.createElement("script");n.type="text/javascript";n.async=!0;n.src="https://cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(n,a);analytics._loadOptions=e};analytics.SNIPPET_VERSION="4.1.0";
+ analytics.load("B19AspwpmjMKQkjgX9QE1Lw3fGaZlJtl");
+ analytics.page();
+ }}();
+</script> -->
+​
+    <script>  
+        let writeKey = "ILiDIXxOYOGpphskZMb42GQTGYrz9AZq";
+        if (window.location.search.split('=')[0] === "?wk") {
+            writeKey = window.location.search.split('=')[1]
+        } else {
+            writeKey = "ILiDIXxOYOGpphskZMb42GQTGYrz9AZq";
+        }
+        
         !function() {
         var analytics = window.analytics = window.analytics || [];
         if (!analytics.initialize)
@@ -32,53 +51,179 @@
                     analytics._loadOptions = e
                 };
                 analytics.SNIPPET_VERSION = "4.1.0";
-                analytics.load("B19AspwpmjMKQkjgX9QE1Lw3fGaZlJtl")
+                analytics.load(writeKey)
                 analytics.page();
             }
         }();
+        
+//         analytics.ready(function(){
+//             var GA_LOCAL_STORAGE_KEY = 'ga:clientId';
+//             if (window.localStorage) {
+//               ga('create', 'UA-XXXXX-Y', {
+//                 'storage': 'none',
+//                 'clientId': localStorage.getItem(GA_LOCAL_STORAGE_KEY)
+//               });
+//               ga(function(tracker) {
+//                 localStorage.setItem(GA_LOCAL_STORAGE_KEY, tracker.get('clientId'));
+//               });
+//             }
+//             else {
+//               ga('create', 'UA-XXXXX-Y', 'auto');
+//             }
+//         })
     </script>
-
-</head> 
-<body> 
-<h1>What is your favorite place to travel right now? UPDATED with new snippet </h1> 
-<p>I am building a directory of the sweetest travel destinations.</p>  
-<form name="travel" onsubmit="identify(event)">
-     What is your favorite travel destination?
-    <input name="destination" required="" size="81" type="text"/> 
-    <br><br><br> 
-    Any recommendations (cool things to do, places to visit or restaurants to eat)? 
-    <br><br> 
-    <textarea cols="81" name="details" required="" rows="10">
-    </textarea> 
-    <br><br> 
-    Name: <input name="fullname" required="" size="75" type="text"/> 
-    <br><br> 
-    Email: <input name="email" required="" size="75" type="email"/> 
-    <br><br>
-    <input name="submit" type="submit" value="submit"/>
-</form> 
-    <script type="text/javascript">
-      function identify(e){
-        e.preventDefault();
-        var form = e.target;
-        var email = form["email"].value;
-        var fullname = form["fullname"].value;
-        var destination = form["destination"].value;
-        var details = form["details"].value;
-        var user = {
-            email: email, 
-            name: fullname, 
-            destination: destination, 
-            details: details
-        };
-        analytics.identify('1234', {
-            email: email, 
-            name: fullname
+</head>
+​
+<body>
+    <h3>BT workspace!</h3>
+<!--     <h3>Legacy Source</h3> -->
+    <p><a href="https://app.segment.com/james9446/sources/javascript/debugger" target="_blank">Source debugger</a></p>
+    <p><a href="https://github.com/James9446/James9446.github.io" target="_blank">GitHub</a></p>
+        <p><a href="https://irinasayshi.github.io/" target="_blank">Irina's Site</a></p>
+ 
+<!--     <h1>Testing SS workspace</h1>
+    <a href="https://app.segment.com/james-reynolds_aec9/sources/javascript/debugger">Source debugger</a> -->
+    
+<!--     <a href="https://app.segment.com/segment-success/sources/javascript12/debugger">Source debugger</a> -->
+    <h4>User Info:</h4>
+    <p id="anony"></p>
+    <p id="user"></p>
+    <p id="traits"></p>
+    
+    <button id="genNum">Generate Number</button>
+    <button id="reset">Reset</button>
+    <button id="getOS">Get OS</button>
+    <button id="callIdentify">Identify</button>
+    <button id="logInt">Log Integrations</button>
+    
+    <p id="writeKeyValue"></p>
+    <input type="text" id="writeKeyInput" placeholder="Enter Write Key">
+    <button id="getWriteKey">Load Write Key</button>
+    
+    <p id="num"></p>
+    <div id="track"></div>
+    <p id="event"></p>
+    <p id="prop"></p>
+    
+    
+    <script>
+        // View Control
+        const updateView = (targetId, newId, label, element, method='') => {
+            let newElement = document.createElement(element);
+            newElement.id = newId;
+            let content = document.createTextNode(label + method);
+            newElement.appendChild(content);
+            
+            let currentElement = document.getElementById(targetId);
+            let parentElement = currentElement.parentNode;
+            parentElement.replaceChild(newElement, currentElement);
+        }
+        const updateAllUserInfo = () => {
+            // Anonymous ID View
+            updateView("anony", "anony", "anonymousId: ", "P", analytics.user().anonymousId());
+            
+            // User ID View
+            updateView("user", "user", "userId: ", "P", analytics.user().id());
+            // Trais View
+            updateView("traits", "traits", "traits: ", "P", JSON.stringify(analytics.user()._getTraits(), null, '\t'));
+        }
+        // Button Functions
+        const getWriteKey = () => {
+            let wk = document.getElementById("writeKeyInput").value;
+            if (wk) {
+                location.replace("https://james9446.github.io/?wk=" + wk);
+            }
+//            delete window.analytics
+//            writeKey = wk;
+//            addAnalytics(); 
+        }
+        const getRandomNumber = () => {
+            let random = Math.floor(Math.random() * 10) + 1;
+            updateView("num", "num", random, "P");
+            let x = Date.now();
+            analytics.track('Number Generated', {
+                range: '1 to 10',
+                number: random
+            });
+        }
+        
+        const resetAnalytics = () => {
+            analytics.reset();
+            updateAllUserInfo();
+        }
+        
+        const getOS = () => {
+            var OSName="Unknown OS";
+            if (navigator.appVersion.indexOf("Win")!=-1) OSName="Windows";
+            if (navigator.appVersion.indexOf("Mac")!=-1) OSName="MacOS";
+            if (navigator.appVersion.indexOf("X11")!=-1) OSName="UNIX";
+            if (navigator.appVersion.indexOf("Linux")!=-1) OSName="Linux";
+            if (navigator.appVersion.indexOf("Android")!=-1) OSName="Android";
+            if (navigator.appVersion.indexOf("iOS")!=-1) OSName="iOS";
+            console.log(`The operating system is ${OSName}`);
+            analytics.track('Get OS', {
+                os: OSName
+            });
+        }
+        
+        const logInt = () => {
+            console.info(analytics.Integrations);
+        }
+        
+        const callIdentify = () => {
+            analytics.identify("80085", {
+                name: "Luigi Mario",
+                email: "luigi@brothersplumbing.it",
+                address: {
+                    street: "1 Up St",
+                    city: "Toad Town",
+                    state: "Dinosour Land",
+                    postalCode: "94025",
+                    country: "Mushroom Kingdom"
+                }
+            });
+        }
+        
+        // Button Event Listeners
+        document.getElementById("genNum").addEventListener("click", getRandomNumber);
+        document.getElementById("reset").addEventListener("click", resetAnalytics);
+        document.getElementById("getOS").addEventListener("click", getOS);
+        document.getElementById("getWriteKey").addEventListener("click", getWriteKey);
+        document.getElementById("callIdentify").addEventListener("click", callIdentify);
+        document.getElementById("logInt").addEventListener("click", logInt);
+        
+        
+        // Initial View
+        analytics.ready(() => {
+            updateAllUserInfo();
+        })
+        
+        analytics.on('identify', () => {
+            updateAllUserInfo();
         });
-        analytics.track('destination submitted', user, function() {
-            window.location.href = "";
-        });
-      }
-</script>
-</body> 
+        
+        updateView("writeKeyValue", "writeKeyValue", "Write Key: ", "P", writeKey);
+        
+        // Display track call
+        analytics.on('track', function(event, properties, options) {
+            updateView("track", "track", "Track Event", "H4");
+            updateView("event", "event", event, "P");
+            updateView("prop", "prop", JSON.stringify(properties, null, '\t'), "P");
+            updateAllUserInfo();
+        });   
+    </script>
+</body>
+​
 </html>
+Collapse
+
+
+
+
+
+
+
+
+Message James Reynolds:seedling:
+
+
